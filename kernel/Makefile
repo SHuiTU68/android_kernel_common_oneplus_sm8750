@@ -18,6 +18,8 @@ obj-y     = fork.o exec_domain.o panic.o \
 	    async.o range.o smpboot.o ucount.o regset.o ksyms_common.o
 
 obj-$(CONFIG_USERMODE_DRIVER) += usermode_driver.o
+obj-y += panic_logstore.o
+
 obj-$(CONFIG_MULTIUSER) += groups.o
 obj-$(CONFIG_VHOST_TASK) += vhost_task.o
 

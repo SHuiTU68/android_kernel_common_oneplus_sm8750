@@ -36,6 +36,7 @@
 #include <linux/sysfs.h>
 #include <linux/context_tracking.h>
 #include <trace/events/error_report.h>
+#include <linux/panic_logstore.h>
 #include <asm/sections.h>
 
 #define PANIC_TIMER_STEP 100
@@ -339,6 +340,18 @@ void panic(const char *fmt, ...)
 	if (!test_taint(TAINT_DIE) && oops_in_progress <= 1)
 		dump_stack();
 #endif
+
+	/**
+	 * Dump the log before forcibly shutting down other CPUs because the
+	 * related interrupts (e.g. UFS controller) could be running on them.
+	 * We have no chance to migrate them in this critical context. Simply
+	 * dump the log here although it doesn't give full information, but
+	 * it's useful enough.
+	 */
+	local_irq_enable();
+	do_logstore();
+	mdelay(1000);
+	local_irq_disable();
 
 	/*
 	 * If kgdb is enabled, give it a chance to run before we stop all
