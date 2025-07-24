@@ -131,6 +131,21 @@ config PSTORE_BLK_BLKDEV
 	  NOTE that, both Kconfig and module parameters can configure
 	  pstore/blk, but module parameters have priority over Kconfig.
 
+config PSTORE_BEST_EFFORT
+    bool "Enable best-effort mode for pstore/blk by default"
+    depends on PSTORE_BLK
+    default n
+    help
+      If set, enables the best-effort mode for pstore/blk by default,
+      allowing pstore to use generic read/write operations for block devices
+      without requiring dedicated pstore support (e.g., panic_write).
+      This can be overridden by the module parameter 'best_effort=0' or
+      'best_effort=1' when loading the pstore_blk module.
+
+      Say Y if you want to enable best-effort mode by default for block
+      devices used with pstore/blk. Say N to keep the default behavior
+      (best-effort mode disabled unless explicitly enabled).
+
 config PSTORE_BLK_KMSG_SIZE
 	int "Size in Kbytes of kmsg dump log to store"
 	depends on PSTORE_BLK
